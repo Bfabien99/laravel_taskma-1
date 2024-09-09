@@ -6,12 +6,19 @@
     @vite('resources/css/app.css')
     <title>Document</title>
 </head>
-<body>
-    <header>
-        <a href="">Login</a>
-        <a href="">Register</a>
+<body class="bg-gray-50 flex flex-col min-h-screen">
+    <header class="bg-white p-4">
+        <a href="{{route('home')}}">Home</a>
+        @auth
+        <a href="{{route('logout')}}">Logout</a>
+        @else
+        <a href="{{route('login')}}">Login</a>
+        <a href="{{route('register')}}">Register</a>
+        @endauth
     </header>
-    <main></main>
+    <main class="grow flex flex-col">
+        @yield('content')
+    </main>
     <footer></footer>
 </body>
 </html>
