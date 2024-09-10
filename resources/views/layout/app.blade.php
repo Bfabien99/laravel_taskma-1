@@ -10,6 +10,7 @@
     <header class="bg-white p-4">
         <a href="{{route('home')}}">Home</a>
         @auth
+        <a href="{{route('myspace')}}">Dashboard</a>
         <a href="{{route('logout')}}">Logout</a>
         @else
         <a href="{{route('login')}}">Login</a>

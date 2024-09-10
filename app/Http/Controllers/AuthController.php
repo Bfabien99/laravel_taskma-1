@@ -29,7 +29,8 @@ class AuthController extends Controller
         $user = User::where('email', $validate['email'])->first();
         Auth::login($user);
 
-        # retoune à l'accueil
+        # retoune au dashboard
+        if($user->role == 'user') return to_route('user.index');
         return to_route('home');
     }
 

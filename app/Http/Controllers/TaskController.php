@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
+use App\Models\Task;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -12,7 +14,7 @@ class TaskController extends Controller
     public function index()
     {
         //
-        return view('user.tasks.index');
+        return view('user.tasks.index', ['tasks' => Task::orderBy('end_date')->get()]);
     }
 
     /**
@@ -30,6 +32,15 @@ class TaskController extends Controller
     public function store(Request $request)
     {
         //
+        $validate = $request->validate([
+            'name' => 'required|min:2|max:50',
+            'description' => 'nullable|min:10|max:100',
+            'project_id' => 'nullable|exists:projects,id',
+            'end_date' => 'nullable|date|after_or_equal:'.now()->format('d-m-Y')
+        ]);
+
+        Task::create($validate);
+        return back()->with('success', 'New task created!');
     }
 
     /**
@@ -47,7 +58,7 @@ class TaskController extends Controller
     public function edit(string $id)
     {
         //
-        return view('user.tasks.edit');
+        return view('user.tasks.edit', ['task' => Task::findOrFail($id)]);
     }
 
     /**
@@ -56,5 +67,25 @@ class TaskController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        $task = Task::find($id);
+        $validate = $request->validate([
+            'name' => 'required|min:2|max:50',
+            'description' => 'nullable|min:10|max:100',
+            'project_id' => 'nullable|exists:projects,id',
+            'end_date' => 'nullable|date|after_or_equal:'.now()->format('d-m-Y')
+        ]);
+
+        $task->update($validate);
+        return back()->with('updated', 'Task updated!');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+        Task::destroy($id);
+        return back()->with('deleted', 'Task deleted!');
     }
 }
