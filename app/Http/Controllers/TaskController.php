@@ -8,21 +8,25 @@ use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-   /**
+    /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
-        return view('user.tasks.index', ['tasks' => Task::orderBy('end_date')->get()]);
+        return view('user.tasks.index', ['tasks' => Task::where('user_id', auth()->user()->id)->orderBy('end_date')->get()]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        if ($request->input('project_id')) {
+            $project = Project::where(['user_id' => auth()->user()->id, 'id' => $request->input('project_id')])->get();
+            if ($project->count() == 0) {
+                return to_route('tasks.create');
+            }
+        }
         return view('user.tasks.create');
     }
 
@@ -31,14 +35,14 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $validate = $request->validate([
-            'name' => 'required|min:2|max:50',
+            'name'        => 'required|min:2|max:50',
             'description' => 'nullable|min:10|max:100',
-            'project_id' => 'nullable|exists:projects,id',
-            'end_date' => 'nullable|date|after_or_equal:'.now()->format('d-m-Y')
+            'project_id'  => 'nullable|exists:projects,id',
+            'end_date'    => 'nullable|date|after_or_equal:' . now()->format('d-m-Y')
         ]);
 
+        $validate['user_id'] = auth()->user()->id;
         Task::create($validate);
         return back()->with('success', 'New task created!');
     }
@@ -48,7 +52,6 @@ class TaskController extends Controller
      */
     public function show(string $id)
     {
-        //
         return view('user.tasks.show');
     }
 
@@ -57,8 +60,10 @@ class TaskController extends Controller
      */
     public function edit(string $id)
     {
-        //
-        return view('user.tasks.edit', ['task' => Task::findOrFail($id)]);
+        $task = Task::findOrFail($id);
+        if ($task->user_id != auth()->user()->id)
+            return to_route('tasks.create')->with('error', 'Task invalid! create new one');
+        return view('user.tasks.edit', ['task' => $task]);
     }
 
     /**
@@ -66,13 +71,14 @@ class TaskController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
-        $task = Task::find($id);
+        $task = Task::findOrFail($id);
+        if ($task->user_id != auth()->user()->id)
+            return to_route('tasks.create')->with('error', 'Task invalid! create new one');
         $validate = $request->validate([
-            'name' => 'required|min:2|max:50',
+            'name'        => 'required|min:2|max:50',
             'description' => 'nullable|min:10|max:100',
-            'project_id' => 'nullable|exists:projects,id',
-            'end_date' => 'nullable|date|after_or_equal:'.now()->format('d-m-Y')
+            'project_id'  => 'nullable|exists:projects,id',
+            'end_date'    => 'nullable|date|after_or_equal:' . now()->format('d-m-Y')
         ]);
 
         $task->update($validate);
@@ -84,7 +90,9 @@ class TaskController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $task = Task::findOrFail($id);
+        if ($task->user_id != auth()->user()->id)
+            return to_route('tasks.create')->with('error', 'Task invalid! create new one');
         Task::destroy($id);
         return back()->with('deleted', 'Task deleted!');
     }

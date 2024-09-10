@@ -12,6 +12,7 @@ class Task extends Model
         'name',
         'description',
         'end_date',
-        'project_id'
+        'project_id',
+        'user_id'
     ];
 }

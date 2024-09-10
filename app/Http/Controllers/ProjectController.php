@@ -8,13 +8,12 @@ use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
-/**
+    /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
-        return view('user.projects.index', ['projects' => Project::get()]);
+        return view('user.projects.index', ['projects' => Project::where('user_id', auth()->user()->id)->get()]);
     }
 
     /**
@@ -22,7 +21,6 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
         return view('user.projects.create');
     }
 
@@ -31,14 +29,14 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $validate = $request->validate([
-            'name' => 'required|min:2|max:50',
+            'name'        => 'required|min:2|max:50',
             'description' => 'required|min:10|max:100',
-            'start_date' => 'required|date|after_or_equal:'.now()->format('d-m-Y'),
-            'end_date' => 'nullable|date|after_or_equal:start_date'
+            'start_date'  => 'required|date|after_or_equal:' . now()->format('d-m-Y'),
+            'end_date'    => 'nullable|date|after_or_equal:start_date'
         ]);
 
+        $validate['user_id'] = auth()->user()->id;
         Project::create($validate);
         return back()->with('success', 'New project created!');
     }
@@ -48,8 +46,7 @@ class ProjectController extends Controller
      */
     public function show(string $id)
     {
-        //
-        return view('user.projects.show', ['project' => Project::findOrFail($id), 'tasks' => Task::where('project_id', $id)->get()]);
+        return view('user.projects.show', ['project' => Project::findOrFail($id), 'tasks' => Task::where(['project_id' => $id, 'user_id' => auth()->user()->id])->get()]);
     }
 
     /**
@@ -57,8 +54,10 @@ class ProjectController extends Controller
      */
     public function edit(string $id)
     {
-        //
-        return view('user.projects.edit', ['project' => Project::findOrFail($id)]);
+        $project = Project::findOrFail($id);
+        if ($project->user_id != auth()->user()->id)
+            return to_route('projects.create')->with('error', 'project invalid! create new one');
+        return view('user.projects.edit', ['project' => $project]);
     }
 
     /**
@@ -66,13 +65,14 @@ class ProjectController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
-        $project = Project::find($id);
+        $project = Project::findOrFail($id);
+        if ($project->user_id != auth()->user()->id)
+            return to_route('projects.create')->with('error', 'project invalid! create new one');
         $validate = $request->validate([
-            'name' => 'required|min:2|max:50',
+            'name'        => 'required|min:2|max:50',
             'description' => 'required|min:10|max:100',
-            'start_date' => 'required|date|after_or_equal:'.now()->format('d-m-Y'),
-            'end_date' => 'nullable|date|after_or_equal:start_date'
+            'start_date'  => 'required|date|after_or_equal:' . now()->format('d-m-Y'),
+            'end_date'    => 'nullable|date|after_or_equal:start_date'
         ]);
 
         $project->update($validate);
@@ -84,7 +84,9 @@ class ProjectController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $project = Project::findOrFail($id);
+        if ($project->user_id != auth()->user()->id)
+            return to_route('projects.create')->with('error', 'project invalid! create new one');
         Project::destroy($id);
         return back()->with('deleted', 'project deleted!');
     }
