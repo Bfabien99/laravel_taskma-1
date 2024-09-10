@@ -14,7 +14,7 @@
             <a href="{{route('tasks.create', ['project_id' => $project->id])}}">Create new task</a>
         </div>
         <div>
-            @forelse ($tasks as $task)
+            @forelse ($project->tasks as $task)
                 <div class="flex flex-col p-2 border-2 max-w-fit">
                     <p>{{$task->name}}</p>
                     <small class="text-gray-400">{{Str::limit($task->description, 20)}}</small>

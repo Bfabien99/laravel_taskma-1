@@ -8,7 +8,7 @@
         @if (session()->has('deleted'))
             <small class="bg-green-500 text-white p-2 rounded-md">{{session('deleted')}}</small>
         @endif
-        @forelse ($projects as $project)
+        @forelse (auth()->user()->projects as $project)
             <div class="flex flex-col p-2 border-2 max-w-fit">
                 <p>{{$project->name}}</p>
                 <small class="text-gray-400">{{Str::limit($project->description, 20)}}</small>

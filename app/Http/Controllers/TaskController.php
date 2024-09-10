@@ -13,7 +13,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return view('user.tasks.index', ['tasks' => Task::where('user_id', auth()->user()->id)->orderBy('end_date')->get()]);
+        return view('user.tasks.index');
     }
 
     /**

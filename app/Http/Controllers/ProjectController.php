@@ -46,7 +46,7 @@ class ProjectController extends Controller
      */
     public function show(string $id)
     {
-        return view('user.projects.show', ['project' => Project::findOrFail($id), 'tasks' => Task::where(['project_id' => $id, 'user_id' => auth()->user()->id])->get()]);
+        return view('user.projects.show', ['project' => Project::findOrFail($id)]);
     }
 
     /**
