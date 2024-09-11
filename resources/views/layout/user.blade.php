@@ -12,6 +12,7 @@
         <a href="{{route('user.index')}}">Dashboard</a>
         <a href="{{route('tasks.index')}}">Tasks</a>
         <a href="{{route('projects.index')}}">Projects</a>
+        <a href="{{route('profil')}}">Profil</a>
         <a href="{{route('logout')}}">Logout</a>
         </div>
     </header>

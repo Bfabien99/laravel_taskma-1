@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
@@ -32,4 +33,11 @@ Route::middleware('auth')->group(function(){
     
     Route::resource('tasks', TaskController::class);
     Route::resource('projects', ProjectController::class);
+    Route::controller(ProfilController::class)->group(
+        function(){
+            Route::get('/profil', 'index')->name('profil');
+            Route::put('/profil-password', 'update_pass')->name('profil.pass');
+            Route::put('/profil-info', 'update_info')->name('profil.info');
+        }
+    );
 });
