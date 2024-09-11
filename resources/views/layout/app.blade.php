@@ -14,7 +14,7 @@
             <a href="{{route('home')}}">Home</a>
             <div class="flex gap-5 items-center">
                 @auth
-                    <a href="{{route('myspace')}}">Dashboard</a>
+                    <a href="{{route('myspace')}}" class="bg-gray-900 text-white font-medium p-2 rounded-md hover:bg-black">Dashboard</a>
                     <a href="{{route('logout')}}">Logout</a>
                 @else
                     <a href="{{route('login')}}">Login</a>
