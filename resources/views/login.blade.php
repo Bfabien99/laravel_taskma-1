@@ -6,6 +6,9 @@
         @if (session()->has('error'))
             <small class="bg-red-400 text-white p-2 rounded-md">{{session('error')}}</small>
         @endif
+        @if (session()->has('success'))
+            <small class="bg-green-500 text-white p-2 rounded-md">{{session('success')}}</small>
+        @endif
         @csrf
         <div class="flex flex-col">
             <label for="" class="font-medium capitalize">Email</label>
@@ -20,6 +23,9 @@
             @error('password')
                 <small class="text-red-400">{{$message}}</small>
             @enderror
+            <div class="p-2">
+                <a href="{{route('reset')}}" class="text-blue-400 hover:underline hover:text-blue-500">Reset password</a>
+            </div>
         </div>
         <button class="bg-gray-900 hover:bg-black text-white p-2 rounded-md font-medium">Login</button>
     </form>

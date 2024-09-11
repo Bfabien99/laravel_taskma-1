@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MailableController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
@@ -40,4 +41,11 @@ Route::middleware('auth')->group(function(){
             Route::put('/profil-info', 'update_info')->name('profil.info');
         }
     );
+});
+
+Route::controller(MailableController::class)->group(function(){
+    Route::get('/reset', 'reset_confirm')->name('reset');
+    Route::post('/reset', 'handle_reset_confirm')->name('reset.post');
+    Route::get('/password_reset', 'reset_password')->name('pass-reset');
+    Route::post('/password_reset', 'handle_reset_password')->name('pass-reset.post');
 });
