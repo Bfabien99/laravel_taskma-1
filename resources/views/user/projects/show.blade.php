@@ -23,7 +23,7 @@
                             @method('DELETE')
                             <button class="p-2 bg-red-400 text-white rounded-sm hover:bg-red-500">Delete</button>
                         </form>
-                        <a href="{{route('tasks.edit', $task->id)}}"
+                        <a href="{{route('tasks.edit', ['task' => $task->id])}}"
                             class="p-2 bg-blue-400 text-white rounded-sm hover:bg-blue-500">Edit</a>
                     </div>
                 </div>

@@ -32,15 +32,6 @@
                 <small class="text-red-400">{{$message}}</small>
             @enderror
         </div>
-        @if(request()->input('project_id'))
-        <div class="flex flex-col">
-            <label for="" class="font-medium capitalize">Project</label>
-            <input type="text" class="border p-2 rounded-sm" name="project_id" value="{{old('project_id', $task->project_id)}}" placeholder="Enter task project_id">
-            @error('project_id')
-                <small class="text-red-400">{{$message}}</small>
-            @enderror
-        </div>
-        @endif
         <button class="bg-gray-900 hover:bg-black text-white p-2 rounded-md font-medium">Edit Task</button>
     </form>
 </section>
