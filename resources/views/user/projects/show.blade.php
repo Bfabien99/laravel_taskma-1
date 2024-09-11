@@ -10,7 +10,7 @@
         </div>
     </div>
     <div class="flex flex-col gap-2 my-2">
-        <a href="{{route('tasks.create', ['project_id' => $project->id])}}" class="w-fit bg-gray-900 hover:bg-black p-2 text-white rounded-md font-medium"><i class="mx-1">+</i>Add new task</a>
+        <a href="{{route('tasks.create', ['project_id' => $project->id])}}" class="w-fit bg-gray-900 hover:bg-black p-2 text-white rounded-md font-medium"><i class="mx-1">+</i>Add new task <small class="bg-red-400 p-2 rounded-full">{{$project->tasks->count()}}</small></a>
         <div class="flex flex-wrap gap-x-2 gap-y-2">
             @forelse ($project->tasks as $task)
                 <div class="flex flex-col p-2 border-2 max-w-fit">

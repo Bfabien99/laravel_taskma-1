@@ -3,7 +3,7 @@
 <section class="flex flex-col m-auto max-w-screen-lg grow p-2">
     <div class="p-2 flex flex-col gap-2">
         <a href="{{route('tasks.create')}}" class="w-fit bg-gray-900 hover:bg-black p-2 text-white rounded-md font-medium"><i
-                class="mx-1">+</i>Create new task</a>
+                class="mx-1">+</i>Create new task <small class="bg-red-400 p-2 rounded-full">{{auth()->user()->tasks->count()}}</small></a>
         @if (session()->has('deleted'))
             <div>
                 <small class="bg-green-500 text-white p-2 rounded-md">{{session('deleted')}}</small>
