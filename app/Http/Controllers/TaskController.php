@@ -35,10 +35,21 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
+        if ($request->input('project_id')) {
+            $project = Project::where(['user_id' => auth()->user()->id, 'id' => $request->input('project_id')])->first();
+            if ($project->count() == 0) {
+                return to_route('tasks.create');
+            }
+            $validate = $request->validate([
+                'name'        => 'required|min:2|max:50',
+                'description' => 'nullable|min:10|max:100',
+                'project_id'  => 'exists:projects,id',
+                'end_date'    => 'nullable|date|after_or_equal:' . now()->format('d-m-Y') . '|before_or_equal:' . $project->end_date
+            ]);
+        }
         $validate = $request->validate([
             'name'        => 'required|min:2|max:50',
             'description' => 'nullable|min:10|max:100',
-            'project_id'  => 'nullable|exists:projects,id',
             'end_date'    => 'nullable|date|after_or_equal:' . now()->format('d-m-Y')
         ]);
 
@@ -72,8 +83,19 @@ class TaskController extends Controller
     public function update(Request $request, string $id)
     {
         $task = Task::findOrFail($id);
-        if ($task->user_id != auth()->user()->id)
-            return to_route('tasks.create')->with('error', 'Task invalid! create new one');
+        if ($task->user_id != auth()->user()->id) return to_route('tasks.create')->with('error', 'Task invalid! create new one');
+        if($task->project_id){
+            $project = Project::where(['user_id' => auth()->user()->id, 'id' => $task->project_id])->first();
+            if ($project->count() == 0) {
+                return to_route('tasks.create');
+            }
+            $validate = $request->validate([
+                'name'        => 'required|min:2|max:50',
+                'description' => 'nullable|min:10|max:100',
+                'project_id'  => 'nullable|exists:projects,id',
+                'end_date'    => 'nullable|date|after_or_equal:' . now()->format('d-m-Y') . '|before_or_equal:' . $project->end_date
+            ]);
+        }
         $validate = $request->validate([
             'name'        => 'required|min:2|max:50',
             'description' => 'nullable|min:10|max:100',
